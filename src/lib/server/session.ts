@@ -69,11 +69,11 @@ export function setSessionTokenCookie(token: string, expiresAt: number): void {
 export function deleteSessionTokenCookie(): void {
     const { cookies, url } = getRequestEvent()
 
-	cookies.set("session", "", {
+    cookies.delete("session", {
 		path: "/",
         secure: !dev || url.protocol === "https",
 		maxAge: 0
-	});
+    })
 }
 
 export function generateSessionToken(): string {

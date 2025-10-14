@@ -28,29 +28,22 @@ export async function GET({ cookies, url }) {
 
 	const claims: any = decodeIdToken(tokens.idToken());
 
+	console.log(claims)
+
 	const googleId = claims["sub"];
-	const name = claims["name"]
-	const email = claims["email"]
+	const name = claims["name"];
+	const email = claims["email"];
 
-	const existingUser = await getUserFromGoogleId(googleId);
+	let user = await getUserFromGoogleId(googleId);
 
-	if (existingUser) {
-		const sessionToken = generateSessionToken();
-		const session = await createSession(sessionToken, existingUser.id);
-
-        if (!session) throw new Error("Error when creating new session");
-
-		setSessionTokenCookie(sessionToken, session.expires_at);
-		redirect(307, "/");
+	if (!user) {
+		user = await createUser(googleId, email, name);
+		if (!user) error(400, { message: "Please restart the process." });
 	}
-
-	const user = await createUser(googleId, email, name);
-    if (!user) error(400, { message: "Please restart the process." });
 
 	const sessionToken = generateSessionToken();
 	const session = await createSession(sessionToken, user.id);
     if (!session) error(400, { message: "Please restart the process." });
-
 	setSessionTokenCookie(sessionToken, session.expires_at);
 	redirect(307, "/");
 }
