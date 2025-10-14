@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { deleteUser } from "$lib/query/user";
+    import { deleteUser } from "$lib/rpc/user";
 
     type Props = { id: number }
 

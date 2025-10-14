@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { createUser } from "$lib/query/user";
+    import { createUser } from "$lib/rpc/user";
 
     type EnhanceInstructions = Parameters<typeof createUser.enhance>[0]
 

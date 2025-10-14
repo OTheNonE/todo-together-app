@@ -2,6 +2,13 @@ import { form, query } from "$app/server";
 import { db } from "$lib/server/database";
 import { createUserSchema, deleteUserSchema } from "./schema";
 
+
+
+export const getUser = query(async () => {
+
+})
+
+
 export const getUsers = query(async () => {
     
     const result = await db
