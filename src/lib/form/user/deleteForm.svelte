@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
     import { deleteUser } from "$lib/rpc/user";
 
     type Props = { id: number }
@@ -14,4 +14,4 @@
 <form {...deleteSpecificUser}>
     <input {...fields.id.as("number")} hidden value={id}>
     <button type="submit"> Remove </button>
-</form>
+</form> -->

@@ -1,5 +1,5 @@
 import { form, query } from "$app/server";
-import { db } from "$lib/server/database";
+import { db } from "$lib/server/db";
 import { createListSchema, deleteListSchema, selectListSchema, updateListSchema } from "./schema";
 
 export const getLists = query(async () => {

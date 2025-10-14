@@ -1,5 +1,5 @@
-<script lang="ts">
-    import { createUser } from "$lib/rpc/user";
+<!-- <script lang="ts">
+    // import { createUser } from "$lib/rpc/user";
 
     type EnhanceInstructions = Parameters<typeof createUser.enhance>[0]
 
@@ -42,4 +42,4 @@
         Submit
     </button>
 
-</form>
+</form> -->

@@ -4,9 +4,12 @@
 
 </script>
 
-<CreateUserForm />
+<h1> Hello </h1>
+<a href="/login/google"> Login with Google </a>
 
-<table>
+<!-- <CreateUserForm /> -->
+
+<!-- <table>
     <caption> Some users </caption>
     <thead>
         <tr>
@@ -26,4 +29,4 @@
             </tr>
         {/each}
     </tbody>
-</table>
+</table> -->
