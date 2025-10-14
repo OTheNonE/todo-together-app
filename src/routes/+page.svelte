@@ -1,5 +1,7 @@
 <script>
-    import { CreateUserForm, DeleteUserForm, getUsers } from "$lib/form/user";
+    import { CreateUserForm, DeleteUserForm } from "$lib/form/user";
+    import { getUsers } from "$lib/rpc/user";
+
 </script>
 
 <CreateUserForm />
