@@ -1,5 +1,5 @@
 
-camelCase: false
+camelCase: true
 customImports: {}
 dateParser: timestamp
 defaultSchemas: [] # ["public"] for PostgreSQL.

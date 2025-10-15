@@ -1,22 +1,12 @@
-import { form, query } from "$app/server";
-import { db } from "$lib/server/db";
-import { createUserSchema, deleteUserSchema } from "./schema";
-
-
+import { getRequestEvent, query } from "$app/server";
 
 export const getUser = query(async () => {
+    const { locals: { session } } = getRequestEvent()
 
-})
+    if (!session) return undefined
 
-
-export const getUsers = query(async () => {
-    
-    const result = await db
-        .selectFrom("user")
-        .select(["id", "email", "name"])
-        .execute()
-
-    return result
+    const { email, name, userId: id } = session
+    return { email, name, id }
 })
 
 // export const createUser = form(
