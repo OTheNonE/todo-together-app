@@ -1,13 +1,17 @@
-import { db } from "./db";
-import { encodeBase32, encodeHexLowerCase } from "@oslojs/encoding";
-import { sha256 } from "@oslojs/crypto/sha2";
+import { db } from "$lib/server/db";
 import { getRequestEvent } from "$app/server";
-import { dev } from "$app/environment";
+import { error } from "@sveltejs/kit";
+import { deleteSessionTokenCookie, setSessionTokenCookie } from "./cookies";
+import { encodeSessionToken, generateSessionToken } from "./token";
 
 export const SESSION_UPDATE_MS = 1000 * 60 * 60 * 24 * 15
 export const SESSION_OUTDATED_MS = 1000 * 60 * 60 * 24 * 30
 
-export async function createSession(token: string, userId: number) {
+// Login
+export async function createSession(userId: number) {
+
+    const token = generateSessionToken()
+
 	const sessionId = encodeSessionToken(token);
 
     const expiresAt = Date.now() + SESSION_OUTDATED_MS
@@ -18,9 +22,14 @@ export async function createSession(token: string, userId: number) {
         .returningAll()
         .executeTakeFirst()
 
+    if (!session) error(400, { message: "Please restart the process." })
+        
+	setSessionTokenCookie(token, session.expiresAt);
+
 	return session;
 }
 
+// Handle
 export async function getValidatedSession() {
     const { cookies } = getRequestEvent()
 
@@ -74,49 +83,29 @@ export async function getValidatedSession() {
 	return session;
 }
 
-export async function invalidateSession(sessionId: string) {
+// Logout
+export async function invalidateSession() {
+    const { locals } = getRequestEvent()
+
+    const { session } = locals
+
+    if (!session) return error(401, { message: "You are already logged out." })
+
     await db
         .deleteFrom("session")
-        .where("id", "=", sessionId)
+        .where("id", "=", session.id)
         .execute()
+
+    deleteSessionTokenCookie()
+    
 }
 
+// Logout everywhere
 export async function invalidateUserSessions(userId: number) {
     await db
         .deleteFrom("session")
         .where("userId", "=", userId)
         .execute()
-}
-
-export function setSessionTokenCookie(token: string, expiresAt: number): void {
-    const { cookies, url } = getRequestEvent()
-
-	cookies.set("session", token, {
-        path: "/",
-        secure: !dev || url.protocol === "https",
-		expires: new Date(expiresAt)
-	});
-}
-
-export function deleteSessionTokenCookie(): void {
-    const { cookies, url } = getRequestEvent()
-
-    cookies.delete("session", {
-		path: "/",
-        secure: !dev || url.protocol === "https",
-		maxAge: 0
-    })
-}
-
-export function generateSessionToken(): string {
-	const tokenBytes = new Uint8Array(20);
-	crypto.getRandomValues(tokenBytes);
-	const token = encodeBase32(tokenBytes).toLowerCase();
-	return token;
-}
-
-export function encodeSessionToken(token: string) {
-    return encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
 }
 
 export type Session = NonNullable<Awaited<ReturnType<typeof getValidatedSession>>>

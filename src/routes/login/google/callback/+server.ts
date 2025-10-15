@@ -4,7 +4,7 @@ import { decodeIdToken } from "arctic";
 import type { OAuth2Tokens } from "arctic";
 
 import { createUser, getUserFromGoogleId } from "$lib/server/db/query/auth";
-import { createSession, generateSessionToken, setSessionTokenCookie } from "$lib/server/session";
+import { createSession } from "$lib/server/session";
 import { google, google_schema } from "$lib/server/oauth/google";
 import { dev } from "$app/environment";
 
@@ -51,9 +51,7 @@ export async function GET({ cookies, url }) {
 		if (!user) error(400, { message: "Please restart the process." });
 	}
 
-	const sessionToken = generateSessionToken();
-	const session = await createSession(sessionToken, user.id);
-    if (!session) error(400, { message: "Please restart the process." });
-	setSessionTokenCookie(sessionToken, session.expiresAt);
+	await createSession(user.id);
+
 	redirect(307, "/");
 }
