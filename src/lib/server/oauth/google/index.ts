@@ -1,2 +1,2 @@
 export { google } from "./client"
-export { google_schema } from "./schema"
+export { google_claims_schema } from "./schema"
