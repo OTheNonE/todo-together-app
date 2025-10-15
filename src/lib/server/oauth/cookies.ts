@@ -31,13 +31,13 @@ export function getStateCookie() {
 export function getCodeVerifierCookie() {
     const { cookies } = getRequestEvent()
     
-    return cookies.get("google_code_verifier") ?? null;
+    return cookies.get("code_verifier") ?? null;
 }
 
 export function deleteStateCookie() {
     const { cookies, url } = getRequestEvent()
 
-    cookies.delete("google_oauth_state", {
+    cookies.delete("oauth_state", {
         secure: !dev || url.protocol === "https",
         path: "/",
     })
@@ -46,7 +46,7 @@ export function deleteStateCookie() {
 export function deleteCodeVerifierCookie() {
     const { cookies, url } = getRequestEvent()
     
-    cookies.delete("google_code_verifier", {
+    cookies.delete("code_verifier", {
         secure: !dev || url.protocol === "https",
         path: "/",
     })
