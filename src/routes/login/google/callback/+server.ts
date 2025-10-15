@@ -1,19 +1,14 @@
-import { error, redirect } from "@sveltejs/kit";
+import { redirect } from "@sveltejs/kit";
 import { createSession } from "$lib/server/session";
 import { handleLoginCallback, google, google_claims_schema } from "$lib/server/oauth";
-import { createUser, getUserFromGoogleId } from "$lib/server/db/query/auth";
+import { getOrCreateUser } from "$lib/server/user";
 
 export async function GET() {
-	const { email, name, sub: googleId } = await handleLoginCallback(google, google_claims_schema)
+	const { email, name } = await handleLoginCallback(google, google_claims_schema)
 
-	let user = await getUserFromGoogleId(googleId);
+	const { id } = await getOrCreateUser({ email, name })
 
-	if (!user) {
-		user = await createUser(googleId, email, name);
-		if (!user) error(400, { message: "Please restart the process." });
-	}
-
-	await createSession(user.id);
+	await createSession(id);
 
 	redirect(307, "/");
 }
