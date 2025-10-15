@@ -1,11 +1,10 @@
 <script lang="ts">
+	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
-    import { getUser } from '$lib/rpc/user/index.remote';
-
+	import { getUser } from '$lib/rpc/user/index.remote';
+	
 	let { children } = $props();
-
-	const user = $derived(getUser())
-
+	const user = $derived(getUser());
 </script>
 
 <svelte:head>
@@ -36,3 +35,15 @@
 </div>
 
 {@render children?.()}
+
+<div class="dock dock-sm">
+	<a href="/">
+		Home
+	</a>
+	<a href="/list">
+		List
+	</a>
+	<a href="/settings">
+		User
+	</a>
+</div>
