@@ -16,7 +16,6 @@ export function deleteSessionTokenCookie(): void {
 
     cookies.delete("session", {
 		path: "/",
-        secure: !dev || url.protocol === "https",
-		maxAge: 0
+        secure: !dev || url.protocol === "https"
     })
 }

@@ -1,10 +1,10 @@
 
 import { invalidateSession } from "$lib/server/session";
-import { error, json } from "@sveltejs/kit";
+import { redirect } from "@sveltejs/kit";
 
-export function GET() {
+export async function GET() {
 
-    invalidateSession()
+    await invalidateSession()
 
-    return json({ result: "success" })
+    redirect(302, "/")
 }

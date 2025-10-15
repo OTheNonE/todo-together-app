@@ -1,11 +1,9 @@
 <script>
-    import { CreateUserForm, DeleteUserForm } from "$lib/form/user";
-    import { getUsers } from "$lib/rpc/user";
 
 </script>
 
-<h1> Hello </h1>
-<a href="/login/google"> Login with Google </a>
+<!-- <h1> Hello </h1>
+<a href="/login/google"> Login with Google </a> -->
 
 <!-- <CreateUserForm /> -->
 
