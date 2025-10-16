@@ -1,0 +1,1 @@
+export const LIST_MEMBER_ROLES = ["member", "owner"] as const

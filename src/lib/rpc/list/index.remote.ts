@@ -1,5 +1,6 @@
-import { form, query } from "$app/server";
+import { form, getRequestEvent, query } from "$app/server";
 import { db } from "$lib/server/db";
+import { fail } from "@sveltejs/kit";
 import { createListSchema, deleteListSchema, selectListSchema, updateListSchema } from "./schema";
 
 export const getLists = query(async () => {
@@ -22,12 +23,35 @@ export const getList = query(selectListSchema, async ({ id }) => {
 })
 
 export const createList = form(createListSchema, async (values) => {
-    const { insertId } = await db
-        .insertInto("list")
-        .values(values)
-        .executeTakeFirst()
+    const { locals } = getRequestEvent()
 
-    return insertId
+    const { session } = locals
+    if (!session) return fail(404, { message: "You are not logged in." })
+
+    const { userId } = session
+
+    const list = await db
+        .transaction()
+        .execute(async tx => {
+
+            const list = await tx
+                .insertInto("list")
+                .values(values)
+                .returningAll()
+                .executeTakeFirst()
+
+            if (!list) return fail(404, { message: "Could not create list." })
+
+            const membership = await tx
+                .insertInto("memberOfList")
+                .values({ userId, listId: list?.id, role: "owner" })
+                .returningAll()
+                .executeTakeFirst()
+
+            return list
+        })
+
+    return list
 })
 
 export const updateList = form(updateListSchema, async (data) => {
